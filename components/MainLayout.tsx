@@ -168,7 +168,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     // 1. Loading
     // 2. Have results
     // 3. Debounced query > 2 chars (even if 0 results, to show "No matches")
-    const showSearch = loading || results.length > 0 || (debouncedQuery.length >= 2 && results.length === 0);
+    // Condition to show search overlay:
+    // 1. Loading
+    // 2. Have results
+    // 3. Debounced query > 2 chars 
+    // 4. Any active filter
+    const hasActiveFilters = activeGenre !== null || activeLanguage !== null || activeCountry !== null;
+    const showSearch = loading || results.length > 0 || (debouncedQuery.length >= 2) || hasActiveFilters;
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-blue-500/30 font-sans pb-20">
