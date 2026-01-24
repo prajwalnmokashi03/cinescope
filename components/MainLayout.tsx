@@ -207,27 +207,36 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                         <span className="font-bold text-xl tracking-tight">CineScope</span>
                     </Link>
                     {!isLoginPage && (
-                        <div className="hidden md:flex gap-6 text-sm font-medium items-center">
+                        <div className="hidden md:flex gap-8 text-sm font-medium items-center h-full">
                             <Link
                                 href="/"
                                 onClick={resetSearch}
-                                className={`transition-all duration-300 ease-in-out ${pathname === '/' ? 'text-white font-bold scale-110' : 'text-gray-400 hover:text-white hover:text-blue-500 scale-100'}`}
+                                className={`relative h-full flex items-center transition-colors duration-300 ${pathname === '/' ? 'text-white' : 'text-gray-400 hover:text-white'}`}
                             >
                                 Home
+                                {pathname === '/' && (
+                                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)] animate-in fade-in zoom-in-50 duration-300"></span>
+                                )}
                             </Link>
                             <Link
                                 href="/movies"
                                 onClick={resetSearch}
-                                className={`transition-all duration-300 ease-in-out ${pathname === '/movies' ? 'text-white font-bold scale-110' : 'text-gray-400 hover:text-white hover:text-blue-500 scale-100'}`}
+                                className={`relative h-full flex items-center transition-colors duration-300 ${pathname === '/movies' ? 'text-white' : 'text-gray-400 hover:text-white'}`}
                             >
                                 Movies
+                                {pathname === '/movies' && (
+                                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)] animate-in fade-in zoom-in-50 duration-300"></span>
+                                )}
                             </Link>
                             <Link
                                 href="/series"
                                 onClick={resetSearch}
-                                className={`transition-all duration-300 ease-in-out ${pathname === '/series' ? 'text-white font-bold scale-110' : 'text-gray-400 hover:text-white hover:text-blue-500 scale-100'}`}
+                                className={`relative h-full flex items-center transition-colors duration-300 ${pathname === '/series' ? 'text-white' : 'text-gray-400 hover:text-white'}`}
                             >
                                 Series
+                                {pathname === '/series' && (
+                                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)] animate-in fade-in zoom-in-50 duration-300"></span>
+                                )}
                             </Link>
                         </div>
                     )}
@@ -331,8 +340,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
                 {!isLoginPage && (
                     <div className="flex items-center gap-4">
-                        <Link href="/watchlist" onClick={resetSearch} className="flex items-center justify-center w-10 h-10 text-gray-400 hover:text-white transition-colors flex-shrink-0" aria-label="My List">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <Link
+                            href="/watchlist"
+                            onClick={resetSearch}
+                            className={`flex items-center justify-center w-10 h-10 transition-all duration-300 flex-shrink-0 rounded-full ${['/watchlist', '/my-movies', '/my-series'].includes(pathname) ? 'text-white bg-blue-600/20 shadow-[0_0_15px_rgba(37,99,235,0.3)]' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+                            aria-label="My List"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                         </Link>
