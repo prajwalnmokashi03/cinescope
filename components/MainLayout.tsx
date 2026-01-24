@@ -129,25 +129,25 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                         </div>
                         <span className="font-bold text-xl tracking-tight">CineScope</span>
                     </Link>
-                    <div className="hidden md:flex gap-6 text-sm font-medium">
+                    <div className="hidden md:flex gap-6 text-sm font-medium items-center">
                         <Link
                             href="/"
                             onClick={resetSearch}
-                            className={`transition-colors ${pathname === '/' ? 'text-white font-bold' : 'text-gray-400 hover:text-white hover:text-blue-500'}`}
+                            className={`transition-all duration-300 ease-in-out ${pathname === '/' ? 'text-white font-bold scale-110' : 'text-gray-400 hover:text-white hover:text-blue-500 scale-100'}`}
                         >
                             Home
                         </Link>
                         <Link
                             href="/movies"
                             onClick={resetSearch}
-                            className={`transition-colors ${pathname === '/movies' ? 'text-white font-bold' : 'text-gray-400 hover:text-white hover:text-blue-500'}`}
+                            className={`transition-all duration-300 ease-in-out ${pathname === '/movies' ? 'text-white font-bold scale-110' : 'text-gray-400 hover:text-white hover:text-blue-500 scale-100'}`}
                         >
                             Movies
                         </Link>
                         <Link
                             href="/series"
                             onClick={resetSearch}
-                            className={`transition-colors ${pathname === '/series' ? 'text-white font-bold' : 'text-gray-400 hover:text-white hover:text-blue-500'}`}
+                            className={`transition-all duration-300 ease-in-out ${pathname === '/series' ? 'text-white font-bold scale-110' : 'text-gray-400 hover:text-white hover:text-blue-500 scale-100'}`}
                         >
                             Series
                         </Link>
