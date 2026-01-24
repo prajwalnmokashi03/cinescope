@@ -33,7 +33,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     const [activeGenre, setActiveGenre] = useState<number | null>(null);
     const [activeLanguage, setActiveLanguage] = useState<string | null>(null);
     const [activeCountry, setActiveCountry] = useState<string | null>(null);
-    const [showFilters, setShowFilters] = useState(false);
+    const [isSearchActive, setIsSearchActive] = useState(false);
     const [openDropdown, setOpenDropdown] = useState<'genre' | 'lang' | 'country' | null>(null);
     const pathname = usePathname();
 
@@ -45,6 +45,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         setDebouncedQuery("");
         setResults([]);
         resetFilters();
+        setIsSearchActive(false);
     }, [pathname]);
 
     // 2. Debounce Query
@@ -209,11 +210,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
                 <div
                     className="flex-1 max-w-xl relative group"
-                    onFocus={() => setShowFilters(true)}
+                    onFocus={() => setIsSearchActive(true)}
                     onBlur={(e) => {
                         // Only hide if the new focus is NOT inside this container
                         if (!e.currentTarget.contains(e.relatedTarget)) {
-                            setShowFilters(false);
+                            setIsSearchActive(false);
                             setOpenDropdown(null);
                         }
                     }}
@@ -237,7 +238,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                     </form>
 
                     {/* Filters Row */}
-                    <div className={`absolute top-full left-0 right-0 mt-2 bg-[#161616] border border-gray-800 rounded-xl p-3 shadow-2xl transition-all duration-300 origin-top z-10 ${showFilters ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
+                    <div className={`absolute top-full left-0 right-0 mt-2 bg-[#161616] border border-gray-800 rounded-xl p-3 shadow-2xl transition-all duration-300 origin-top z-10 ${isSearchActive ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
                         <div className="flex gap-2">
                             {/* Genre Dropdown */}
                             <div className="relative">
