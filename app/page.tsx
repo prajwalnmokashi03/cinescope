@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useWatchlist } from "@/hooks/useWatchlist";
 import MediaCard from "@/components/MediaCard";
 import ScrollRow from "@/components/ScrollRow";
+import { useConnection } from "@/contexts/ConnectionContext";
 
 interface SearchResult {
   id: number;
@@ -25,11 +26,14 @@ export default function Home() {
 
   const { watchlist, addToWatchlist } = useWatchlist();
 
+  const { isConnected } = useConnection();
   const mounted = useRef(false);
 
   useEffect(() => {
-    if (mounted.current) return;
-    mounted.current = true;
+    // Basic mount check
+    if (!mounted.current) {
+      mounted.current = true;
+    }
 
     const fetchHomeContent = async () => {
       try {
@@ -37,11 +41,10 @@ export default function Home() {
         if (res.ok) {
           const data = await res.json();
           setTrending(Array.isArray(data.results) ? data.results : []);
+          setTrendingLoaded(true);
         }
       } catch (e) {
         console.error("Failed to load trending:", e);
-      } finally {
-        setTrendingLoaded(true);
       }
 
       try {
@@ -49,16 +52,18 @@ export default function Home() {
         if (res.ok) {
           const data = await res.json();
           setRecent(Array.isArray(data.results) ? data.results : []);
+          setRecentLoaded(true);
         }
       } catch (e) {
         console.error("Failed to load recent:", e);
-      } finally {
-        setRecentLoaded(true);
       }
     };
 
-    fetchHomeContent();
-  }, []);
+    // Fetch if not loaded yet OR if connection just came back
+    if (isConnected) {
+      fetchHomeContent();
+    }
+  }, [isConnected]);
 
   const isInWatchlist = (id: number) => watchlist.some((item) => item.tmdb_id === id);
 
