@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, memo } from "react";
 
 interface MediaCardProps {
     item: any;
@@ -10,7 +10,7 @@ interface MediaCardProps {
     isInWatchlist: boolean;
 }
 
-export default function MediaCard({ item, onAdd, isInWatchlist }: MediaCardProps) {
+const MediaCard = ({ item, onAdd, isInWatchlist }: MediaCardProps) => {
     const title = item.title || item.name || "Unknown";
     const imageUrl = item.poster_path
         ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
@@ -79,3 +79,5 @@ export default function MediaCard({ item, onAdd, isInWatchlist }: MediaCardProps
         </div>
     );
 }
+
+export default memo(MediaCard);

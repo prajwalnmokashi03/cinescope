@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useWatchlist } from "@/hooks/useWatchlist";
@@ -125,7 +125,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
     const isInWatchlist = (id: number) => watchlist.some((item) => item.tmdb_id === id);
 
-    const handleAdd = (e: any, item: SearchResult) => {
+    const handleAdd = useCallback((e: any, item: SearchResult) => {
         e.preventDefault();
         e.stopPropagation();
         addToWatchlist({
@@ -135,10 +135,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             poster_path: item.poster_path,
             year: (item.release_date || item.first_air_date || '').split('-')[0]
         }, 'plan_to_watch');
-    };
+    }, [addToWatchlist]);
 
     // Filter results for display
-    const filteredResults = results.filter(item => {
+    const filteredResults = useMemo(() => results.filter(item => {
         // Media Type Filter
         if (activeFilter !== 'all' && item.media_type !== activeFilter) return false;
 
@@ -175,7 +175,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         }
 
         return true;
-    });
+    }), [results, activeFilter, activeGenre, activeLanguage, activeCountry]);
 
     const movieCount = results.filter(r => r.media_type === 'movie').length;
     const tvCount = results.filter(r => r.media_type === 'tv').length;
