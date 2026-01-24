@@ -21,17 +21,17 @@ export default function MediaCard({ item, onAdd, isInWatchlist }: MediaCardProps
 
     return (
         <div className="group flex flex-col gap-2 min-w-[160px] w-[160px] md:min-w-[180px] md:w-[180px]">
-            <div className="relative aspect-[2/3] rounded-xl overflow-hidden bg-[#1c1c1c] border border-gray-800 group-hover:border-blue-500/50 transition-all duration-300 shadow-lg">
+            <div className="relative aspect-[2/3] rounded-xl overflow-hidden bg-[#1c1c1c] border border-gray-800 group-hover:border-blue-500/50 transition-all duration-500 shadow-lg group-hover:shadow-2xl group-hover:shadow-blue-900/20">
                 <Image
                     src={imageUrl}
                     alt={title}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
                     unoptimized
                 />
 
                 {/* Type Badge */}
-                <div className="absolute top-2 left-2 flex gap-1 z-10">
+                <div className="absolute top-2 left-2 flex gap-1 z-10 opacity-90 group-hover:opacity-100 transition-opacity">
                     <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider shadow-sm ${type === 'movie' ? 'bg-blue-600/90 text-white' : 'bg-green-600/90 text-white'
                         }`}>
                         {type}
@@ -39,13 +39,13 @@ export default function MediaCard({ item, onAdd, isInWatchlist }: MediaCardProps
                 </div>
 
                 {/* Rating Badge */}
-                <div className="absolute top-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm px-1.5 py-0.5 rounded text-xs z-10">
+                <div className="absolute top-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm px-1.5 py-0.5 rounded text-xs z-10 opacity-90 group-hover:opacity-100 transition-opacity">
                     <span className="text-yellow-400">★</span>
                     <span className="font-semibold text-white">{rating}</span>
                 </div>
 
                 {/* Hover Overlay with Actions */}
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-3 p-4 backdrop-blur-[2px]">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-end gap-3 p-4 backdrop-blur-[1px] pb-6">
 
                     {/* Add to Watchlist Button */}
                     {!isInWatchlist ? (

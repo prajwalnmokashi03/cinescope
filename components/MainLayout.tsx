@@ -195,7 +195,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-blue-500/30 font-sans pb-20">
-            <header className="px-6 h-16 flex items-center border-b border-gray-800 mb-8 sticky top-0 bg-[#0a0a0a]/90 backdrop-blur z-50 justify-between gap-8">
+            <header className="px-6 h-16 flex items-center border-b border-gray-800/60 mb-8 sticky top-0 bg-[#0a0a0a]/80 backdrop-blur-md z-50 justify-between gap-8 transition-all duration-300">
                 <div className="flex items-center gap-8 flex-shrink-0">
                     <Link href="/" onClick={resetSearch} className="flex items-center gap-2 group">
                         <div className="bg-blue-600 p-1.5 rounded-lg group-hover:bg-blue-500 transition-colors">
@@ -356,7 +356,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                         {loading ? (
                             <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>
                         ) : filteredResults.length > 0 ? (
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-10 gap-x-6">
                                 {filteredResults.map((item) => (
                                     <MediaCard key={item.id} item={item} onAdd={handleAdd} isInWatchlist={isInWatchlist(item.id)} />
                                 ))}
