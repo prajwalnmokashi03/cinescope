@@ -130,9 +130,27 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                         <span className="font-bold text-xl tracking-tight">CineScope</span>
                     </Link>
                     <div className="hidden md:flex gap-6 text-sm font-medium">
-                        <Link href="/" onClick={resetSearch} className="text-gray-400 hover:text-white hover:text-blue-500 transition-colors">Home</Link>
-                        <Link href="/movies" onClick={resetSearch} className="text-gray-400 hover:text-white hover:text-blue-500 transition-colors">Movies</Link>
-                        <Link href="/series" onClick={resetSearch} className="text-gray-400 hover:text-white hover:text-blue-500 transition-colors">Series</Link>
+                        <Link
+                            href="/"
+                            onClick={resetSearch}
+                            className={`transition-colors ${pathname === '/' ? 'text-white font-bold' : 'text-gray-400 hover:text-white hover:text-blue-500'}`}
+                        >
+                            Home
+                        </Link>
+                        <Link
+                            href="/movies"
+                            onClick={resetSearch}
+                            className={`transition-colors ${pathname === '/movies' ? 'text-white font-bold' : 'text-gray-400 hover:text-white hover:text-blue-500'}`}
+                        >
+                            Movies
+                        </Link>
+                        <Link
+                            href="/series"
+                            onClick={resetSearch}
+                            className={`transition-colors ${pathname === '/series' ? 'text-white font-bold' : 'text-gray-400 hover:text-white hover:text-blue-500'}`}
+                        >
+                            Series
+                        </Link>
                     </div>
                 </div>
 
