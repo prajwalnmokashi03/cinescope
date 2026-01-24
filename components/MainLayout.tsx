@@ -51,14 +51,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedQuery(query);
-        }, 500);
+        }, 300);
         return () => clearTimeout(handler);
     }, [query]);
 
     // 3. Effect: Fetch on debounced query change
     useEffect(() => {
         const fetchResults = async () => {
-            if (debouncedQuery.length < 3) {
+            if (debouncedQuery.length < 2) {
                 setResults([]);
                 return;
             }
@@ -155,8 +155,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     // Condition to show search overlay:
     // 1. Loading
     // 2. Have results
-    // 3. Debounced query > 3 chars (even if 0 results, to show "No matches")
-    const showSearch = loading || results.length > 0 || (debouncedQuery.length >= 3 && results.length === 0);
+    // 3. Debounced query > 2 chars (even if 0 results, to show "No matches")
+    const showSearch = loading || results.length > 0 || (debouncedQuery.length >= 2 && results.length === 0);
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-blue-500/30 font-sans pb-20">
@@ -199,7 +199,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <div className="flex-1 max-w-xl relative group">
                     <form onSubmit={(e) => e.preventDefault()} className="relative z-20">
                         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                            <svg className="w-5 h-5 text-gray-500 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                            {loading ? (
+                                <div className="w-5 h-5 border-2 border-gray-500 border-t-blue-500 rounded-full animate-spin"></div>
+                            ) : (
+                                <svg className="w-5 h-5 text-gray-500 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                            )}
                         </div>
                         <input
                             type="text"
