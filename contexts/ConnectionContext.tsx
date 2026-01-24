@@ -4,34 +4,35 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface ConnectionContextType {
     isConnected: boolean;
+    isInitialized: boolean;
     checkConnection: () => Promise<void>;
 }
 
 const ConnectionContext = createContext<ConnectionContextType>({
-    isConnected: true, // Optimistically true
+    isConnected: false,
+    isInitialized: false,
     checkConnection: async () => { },
 });
 
 export const useConnection = () => useContext(ConnectionContext);
 
 export const ConnectionProvider = ({ children }: { children: React.ReactNode }) => {
-    const [isConnected, setIsConnected] = useState(true);
+    const [isConnected, setIsConnected] = useState(false);
+    const [isInitialized, setIsInitialized] = useState(false);
 
     const checkConnection = async () => {
         try {
             const res = await fetch('/api/health');
             if (res.ok) {
-                if (!isConnected) {
-                    console.log('Connection restored');
-                    setIsConnected(true);
-                }
+                setIsConnected(true);
             } else {
-                throw new Error('Health check failed');
+                setIsConnected(false);
             }
         } catch (e) {
-            if (isConnected) {
-                console.log('Connection lost');
-                setIsConnected(false);
+            setIsConnected(false);
+        } finally {
+            if (!isInitialized) {
+                setIsInitialized(true);
             }
         }
     };
@@ -40,13 +41,13 @@ export const ConnectionProvider = ({ children }: { children: React.ReactNode }) 
         // Initial check
         checkConnection();
 
-        // Poll every 2 seconds
-        const interval = setInterval(checkConnection, 2000);
+        // Poll every 1.5 seconds (1500ms)
+        const interval = setInterval(checkConnection, 1500);
         return () => clearInterval(interval);
-    }, [isConnected]);
+    }, [isInitialized]);
 
     return (
-        <ConnectionContext.Provider value={{ isConnected, checkConnection }}>
+        <ConnectionContext.Provider value={{ isConnected, isInitialized, checkConnection }}>
             {children}
         </ConnectionContext.Provider>
     );
