@@ -58,17 +58,24 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     // 3. Effect: Fetch on debounced query change
     useEffect(() => {
         const fetchResults = async () => {
-            if (debouncedQuery.length < 2) {
+            const hasFilters = activeGenre || activeLanguage || activeCountry;
+
+            if (debouncedQuery.length < 2 && !hasFilters) {
                 setResults([]);
                 return;
             }
 
             setLoading(true);
             setResults([]);
-            setActiveFilter('all'); // Reset filter on new search
 
             try {
-                const res = await fetch(`/api/search?query=${encodeURIComponent(debouncedQuery)}`);
+                const params = new URLSearchParams();
+                if (debouncedQuery) params.append("query", debouncedQuery);
+                if (activeGenre) params.append("genre", activeGenre.toString());
+                if (activeLanguage) params.append("lang", activeLanguage);
+                if (activeCountry) params.append("country", activeCountry);
+
+                const res = await fetch(`/api/search?${params.toString()}`);
                 if (!res.ok) throw new Error("Search failed");
                 const data = await res.json();
                 const rawResults: SearchResult[] = data.results || [];
@@ -87,7 +94,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         };
 
         fetchResults();
-    }, [debouncedQuery]);
+    }, [debouncedQuery, activeGenre, activeLanguage, activeCountry]);
 
     // Reset helper
     const resetSearch = () => {

@@ -105,3 +105,35 @@ export async function getRecent() {
     return [];
   }
 }
+
+export async function discoverMedia(filters: { genre?: string, lang?: string, country?: string }) {
+  try {
+    const params = new URLSearchParams({
+      language: 'en-US',
+      page: '1',
+      sort_by: 'popularity.desc',
+      include_adult: 'false'
+    });
+
+    if (filters.genre) params.append('with_genres', filters.genre);
+    if (filters.lang) params.append('with_original_language', filters.lang);
+    if (filters.country) params.append('with_origin_country', filters.country);
+
+    // Fetch movies and TV shows separately
+    const [moviesRes, tvRes] = await Promise.all([
+      fetchTMDB(`/discover/movie?${params.toString()}`),
+      fetchTMDB(`/discover/tv?${params.toString()}`)
+    ]);
+
+    const movies = (moviesRes.results || []).map((item: any) => ({ ...item, media_type: 'movie' }));
+    const tv = (tvRes.results || []).map((item: any) => ({ ...item, media_type: 'tv' }));
+
+    // Combined and sorted by popularity
+    const combined = [...movies, ...tv].sort((a: any, b: any) => b.popularity - a.popularity);
+
+    return combined.slice(0, 20);
+  } catch (error) {
+    console.error('Error in discoverMedia:', error);
+    return [];
+  }
+}
