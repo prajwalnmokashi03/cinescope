@@ -23,7 +23,7 @@ export default function MySeriesPage() {
     const series = useMemo(() => {
         if (!watchlist) return [];
         // 1. Filter Series Only
-        const items = watchlist.filter(item => item.media_type === 'tv' || item.media_type === 'series');
+        const items = watchlist.filter(item => item.media_type === 'tv');
 
         // 2. Sort
         return items.sort((a, b) => {

@@ -31,9 +31,11 @@ export const ConnectionProvider = ({ children }: { children: React.ReactNode }) 
                 signal: controller.signal
             });
 
-            clearTimeout(timeoutId);
-
             if (res.ok) {
+                const contentType = res.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    throw new Error("Expected JSON but received non-JSON response");
+                }
                 if (!isConnected) {
                     // Only log state change
                     // console.log('Connection restored');

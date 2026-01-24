@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useWatchlist } from "@/hooks/useWatchlist";
 import MediaCard from "@/components/MediaCard";
+import ProfileDropdown from "@/components/ProfileDropdown";
 import { GENRES, LANGUAGES, COUNTRIES } from "@/lib/searchConstants";
 
 interface SearchResult {
@@ -78,9 +79,14 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 if (activeCountry) params.append("country", activeCountry);
 
                 const res = await fetch(`/api/search?${params.toString()}`);
+
+                const contentType = res.headers.get("content-type");
                 if (!res.ok) {
                     setResults([]);
                     return;
+                }
+                if (!contentType || !contentType.includes("application/json")) {
+                    throw new Error("Expected JSON but received non-JSON response");
                 }
                 const data = await res.json();
 
@@ -317,11 +323,15 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                     </div>
                 </div>
 
-                <Link href="/watchlist" onClick={resetSearch} className="flex items-center justify-center w-10 h-10 text-gray-400 hover:text-white transition-colors flex-shrink-0" aria-label="My List">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </Link>
+
+                <div className="flex items-center gap-4">
+                    <Link href="/watchlist" onClick={resetSearch} className="flex items-center justify-center w-10 h-10 text-gray-400 hover:text-white transition-colors flex-shrink-0" aria-label="My List">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </Link>
+                    <ProfileDropdown />
+                </div>
             </header>
 
             <main className="max-w-7xl mx-auto px-6 py-8">

@@ -11,7 +11,7 @@ export default function WatchlistHub() {
     }
 
     const movieCount = watchlist.filter(i => i.media_type === 'movie').length;
-    const seriesCount = watchlist.filter(i => i.media_type === 'tv' || i.media_type === 'series').length;
+    const seriesCount = watchlist.filter(i => i.media_type === 'tv').length;
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white font-sans pb-20">

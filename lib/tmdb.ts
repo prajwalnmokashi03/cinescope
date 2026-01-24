@@ -25,6 +25,13 @@ async function fetchTMDB(endpoint: string) {
     throw new Error("TMDB API request failed");
   }
 
+  const contentType = res.headers.get("content-type");
+  if (!contentType || !contentType.includes("application/json")) {
+    const text = await res.text();
+    console.error("Received non-JSON response from TMDB:", text.substring(0, 100));
+    throw new Error("Received non-JSON response from TMDB API");
+  }
+
   return res.json();
 }
 
