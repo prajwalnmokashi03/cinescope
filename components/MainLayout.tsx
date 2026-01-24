@@ -55,10 +55,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         return () => clearTimeout(handler);
     }, [query]);
 
-    // 3. Effect: Fetch on debounced query change
+    // 3. Effect: Fetch results
     useEffect(() => {
         const fetchResults = async () => {
-            const hasFilters = activeGenre || activeLanguage || activeCountry;
+            // Guard clause: Require >2 chars OR active filters
+            const hasFilters = activeGenre !== null || activeLanguage !== null || activeCountry !== null;
 
             if (debouncedQuery.length < 2 && !hasFilters) {
                 setResults([]);
@@ -76,17 +77,20 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 if (activeCountry) params.append("country", activeCountry);
 
                 const res = await fetch(`/api/search?${params.toString()}`);
-                if (!res.ok) throw new Error("Search failed");
+                if (!res.ok) {
+                    setResults([]);
+                    return;
+                }
                 const data = await res.json();
-                const rawResults: SearchResult[] = data.results || [];
-                // Filter only movie/tv
+
+                // Safe mapping
+                const rawResults: SearchResult[] = Array.isArray(data.results) ? data.results : [];
                 const mediaItems = rawResults.filter((item) =>
                     item.media_type === 'movie' || item.media_type === 'tv'
                 );
                 setResults(mediaItems);
-            } catch (err: any) {
+            } catch (err) {
                 console.error(err);
-                // consistent empty state if error
                 setResults([]);
             } finally {
                 setLoading(false);
