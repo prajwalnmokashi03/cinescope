@@ -64,7 +64,7 @@ export default function WatchlistPage() {
 
     return (
         <div className="min-h-screen bg-[#0a0a0a] text-white font-sans pb-20">
-            <main className="max-w-6xl mx-auto px-6 py-12">
+            <main className="max-w-7xl mx-auto px-6 py-12">
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-gray-800 pb-6">
                     <div>
                         <h1 className="text-4xl font-bold mb-2">My Watchlist</h1>
@@ -95,100 +95,93 @@ export default function WatchlistPage() {
                         </Link>
                     </div>
                 ) : (
-                    <div className="space-y-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                         {sortedWatchlist.map((item) => {
                             const statusOption = STATUS_OPTIONS.find(so => so.value === item.status) || STATUS_OPTIONS[0];
-                            const imageUrl = item.poster_path ? `https://image.tmdb.org/t/p/w200${item.poster_path}` : "https://via.placeholder.com/200x300?text=No+Image";
+                            const imageUrl = item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : "https://via.placeholder.com/500x750?text=No+Image";
 
                             return (
-                                <div key={item.tmdb_id} className="bg-[#121212] border border-gray-800 rounded-2xl p-4 flex flex-col md:flex-row items-center gap-6 hover:border-gray-700 transition-all group shadow-sm hover:shadow-md hover:shadow-blue-900/5">
-                                    {/* 1. Poster Thumbnail */}
-                                    <Link href={`/details/${item.tmdb_id}?type=${item.media_type}`} className="relative w-20 aspect-[2/3] flex-shrink-0 rounded-lg overflow-hidden shadow-lg border border-gray-800 group-hover:scale-105 transition-transform duration-300">
+                                <div key={item.tmdb_id} className="flex flex-col gap-3 group relative">
+                                    {/* 1. Poster Card */}
+                                    <div className="relative aspect-[2/3] rounded-xl overflow-hidden bg-[#1c1c1c] border border-gray-800 shadow-lg group-hover:border-blue-500/50 transition-colors">
                                         <Image src={imageUrl} alt={item.title} fill className="object-cover" unoptimized />
-                                    </Link>
 
-                                    {/* 2. Title & Metadata */}
-                                    <div className="flex-1 w-full md:w-auto text-center md:text-left flex flex-col gap-1">
-                                        <Link href={`/details/${item.tmdb_id}?type=${item.media_type}`} className="text-xl font-bold text-white hover:text-blue-400 transition-colors line-clamp-1">
-                                            {item.title}
-                                        </Link>
-                                        <div className="flex items-center justify-center md:justify-start gap-3">
-                                            <span className="text-sm text-gray-400 font-medium">{item.year || 'N/A'}</span>
-                                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${item.media_type === 'movie' ? 'bg-blue-500/20 text-blue-400' : 'bg-green-500/20 text-green-400'}`}>
+                                        {/* Type Badge */}
+                                        <div className="absolute top-2 left-2 z-10">
+                                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider shadow-sm ${item.media_type === 'movie' ? 'bg-blue-600/90 text-white' : 'bg-green-600/90 text-white'}`}>
                                                 {item.media_type}
                                             </span>
                                         </div>
+
+                                        {/* Remove Button */}
+                                        <button
+                                            onClick={(e) => { e.preventDefault(); removeFromWatchlist(item.tmdb_id); }}
+                                            className="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center bg-black/60 hover:bg-red-600 rounded-full text-white transition-colors backdrop-blur-sm"
+                                            title="Remove"
+                                        >
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                        </button>
+
+                                        {/* Hover Overlay Link */}
+                                        <Link href={`/details/${item.tmdb_id}?type=${item.media_type}`} className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
                                     </div>
 
-                                    {/* 3. Status Dropdown */}
-                                    <div className="w-full md:w-40">
+                                    {/* 2. Metadata & Controls */}
+                                    <div className="flex flex-col gap-2">
+                                        <div>
+                                            <Link href={`/details/${item.tmdb_id}?type=${item.media_type}`} className="font-bold text-white leading-tight hover:text-blue-400 transition-colors line-clamp-1">
+                                                {item.title}
+                                            </Link>
+                                            <div className="text-xs text-gray-500 mt-0.5">{item.year || 'N/A'}</div>
+                                        </div>
+
+                                        {/* Status */}
                                         <div className="relative">
                                             <select
                                                 value={item.status}
                                                 onChange={(e) => updateStatus(item.tmdb_id, e.target.value as WatchlistStatus)}
-                                                className={`w-full appearance-none pl-4 pr-10 py-2.5 rounded-full text-xs font-bold uppercase border bg-[#0a0a0a] focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer transition-colors ${statusOption.color}`}
+                                                className={`w-full appearance-none px-3 py-1.5 rounded-lg text-xs font-bold uppercase border bg-[#0a0a0a] focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer transition-colors ${statusOption.color}`}
                                             >
                                                 {STATUS_OPTIONS.map((opt) => (
                                                     <option key={opt.value} value={opt.value} className="bg-[#1c1c1c] text-gray-300 capitalize">{opt.label}</option>
                                                 ))}
                                             </select>
-                                            <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-current opacity-70">
-                                                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                                            </div>
+                                        </div>
+
+                                        {/* Rating */}
+                                        <div className="flex items-center gap-2">
+                                            <StarRating rating={item.rating || 0} onChange={(r) => updateRating(item.tmdb_id, r)} />
+                                            <span className="text-xs text-gray-500 font-medium">{item.rating ? `${item.rating}/5` : ''}</span>
+                                        </div>
+
+                                        {/* Notes */}
+                                        <div className="mt-1">
+                                            {editingNote === item.tmdb_id ? (
+                                                <div className="flex gap-1 animate-in fade-in duration-200">
+                                                    <input
+                                                        type="text"
+                                                        value={tempNote}
+                                                        onChange={(e) => setTempNote(e.target.value)}
+                                                        className="flex-1 bg-[#161616] border border-gray-700 rounded px-2 py-1 text-xs text-white focus:border-blue-500 outline-none w-full"
+                                                        placeholder="Note..."
+                                                        autoFocus
+                                                        onKeyDown={(e) => { if (e.key === 'Enter') saveNote(item.tmdb_id); }}
+                                                    />
+                                                    <button onClick={() => saveNote(item.tmdb_id)} className="bg-blue-600 text-white px-2 rounded text-xs">OK</button>
+                                                </div>
+                                            ) : (
+                                                item.notes ? (
+                                                    <button onClick={() => openNote(item.tmdb_id, item.notes)} className="w-full text-left text-xs text-gray-400 bg-[#161616] hover:bg-[#202020] border border-gray-800 rounded px-2 py-1.5 truncate transition-colors">
+                                                        📝 {item.notes}
+                                                    </button>
+                                                ) : (
+                                                    <button onClick={() => openNote(item.tmdb_id)} className="text-xs text-gray-600 hover:text-blue-400 transition-colors flex items-center gap-1">
+                                                        + Add Note
+                                                    </button>
+                                                )
+                                            )}
                                         </div>
                                     </div>
-
-                                    {/* 4. Star Rating */}
-                                    <div className="flex items-center gap-3 bg-[#0a0a0a] px-4 py-2 rounded-full border border-gray-800">
-                                        <StarRating rating={item.rating || 0} onChange={(r) => updateRating(item.tmdb_id, r)} />
-                                        <span className="text-sm font-bold text-gray-400 border-l border-gray-700 pl-3">
-                                            {item.rating && item.rating > 0 ? <span className="text-yellow-500">{item.rating}/5</span> : '0/5'}
-                                        </span>
-                                    </div>
-
-                                    {/* 5. Notes Button/Field */}
-                                    <div className="w-full md:w-auto flex justify-center md:justify-end">
-                                        {editingNote === item.tmdb_id ? (
-                                            <div className="flex gap-2 w-full md:w-48 animate-in fade-in zoom-in-95 duration-200">
-                                                <input
-                                                    type="text"
-                                                    value={tempNote}
-                                                    onChange={(e) => setTempNote(e.target.value)}
-                                                    className="flex-1 bg-[#0a0a0a] border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white focus:border-blue-500 outline-none placeholder-gray-600"
-                                                    placeholder="Type note..."
-                                                    autoFocus
-                                                />
-                                                <button onClick={() => saveNote(item.tmdb_id)} className="bg-blue-600 hover:bg-blue-500 text-white px-3 rounded-lg text-xs font-bold transition-colors">Save</button>
-                                            </div>
-                                        ) : (
-                                            item.notes ? (
-                                                <button
-                                                    onClick={() => openNote(item.tmdb_id, item.notes)}
-                                                    className="flex items-center gap-2 group/note px-4 py-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 hover:border-blue-500/30 transition-all text-xs font-bold w-full md:w-auto"
-                                                >
-                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                                    View Notes
-                                                </button>
-                                            ) : (
-                                                <button
-                                                    onClick={() => openNote(item.tmdb_id)}
-                                                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-500 hover:text-white hover:bg-gray-800 transition-colors text-xs font-medium w-full md:w-auto whitespace-nowrap"
-                                                >
-                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                                                    Add Notes
-                                                </button>
-                                            )
-                                        )}
-                                    </div>
-
-                                    {/* 6. Remove Button */}
-                                    <button
-                                        onClick={() => removeFromWatchlist(item.tmdb_id)}
-                                        className="p-3 text-gray-600 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
-                                        title="Remove from Watchlist"
-                                    >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                    </button>
                                 </div>
                             );
                         })}
