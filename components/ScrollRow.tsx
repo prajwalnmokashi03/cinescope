@@ -20,11 +20,45 @@ export default function ScrollRow({ children }: { children: React.ReactNode }) {
         return () => window.removeEventListener("resize", checkScroll);
     }, [children]);
 
+    // Handle smooth horiztonal scrolling with wheel
+    useEffect(() => {
+        const el = scrollRef.current;
+        if (!el) return;
+
+        const handleWheel = (e: WheelEvent) => {
+            if (e.deltaY === 0) return;
+            // Prevent standard vertical scroll if we are scrolling horizontally
+            e.preventDefault();
+            el.scrollBy({
+                left: e.deltaY,
+                behavior: 'smooth'
+            });
+        };
+
+        // Use passive: false to allow preventDefault
+        el.addEventListener("wheel", handleWheel, { passive: false });
+
+        return () => {
+            el.removeEventListener("wheel", handleWheel);
+        };
+    }, []);
+
     const scroll = (direction: "left" | "right") => {
         if (!scrollRef.current) return;
         const { clientWidth } = scrollRef.current;
         const scrollAmount = direction === "left" ? -clientWidth / 1.5 : clientWidth / 1.5;
         scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    };
+
+    // Keyboard navigation (Arrow keys) when focused or global if strictly requested
+    // "Enable smooth horizontal scrolling using... Arrow keys"
+    // To be safe and not hijack page navigation, we'll attach to the container ref but ensure it's focusable
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "ArrowLeft") {
+            scroll("left");
+        } else if (e.key === "ArrowRight") {
+            scroll("right");
+        }
     };
 
     return (
@@ -45,7 +79,9 @@ export default function ScrollRow({ children }: { children: React.ReactNode }) {
             <div
                 ref={scrollRef}
                 onScroll={checkScroll}
-                className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x relative"
+                tabIndex={0}
+                onKeyDown={handleKeyDown}
+                className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x relative outline-none focus:ring-2 focus:ring-blue-500/50 rounded-xl"
             >
                 {children}
             </div>
