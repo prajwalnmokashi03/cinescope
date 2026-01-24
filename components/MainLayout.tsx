@@ -147,12 +147,24 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
         // Country Filter
         if (activeCountry) {
-            // @ts-ignore
-            if (!item.origin_country || !Array.isArray(item.origin_country)) return false;
+            // MOVIE: Permissive logic (if data missing, allow it)
+            if (item.media_type === 'movie') {
+                // @ts-ignore
+                if (item.origin_country && Array.isArray(item.origin_country) && item.origin_country.length > 0) {
+                    // @ts-ignore
+                    const hasCountry = item.origin_country.some((c: string) => c.toUpperCase() === activeCountry.toUpperCase());
+                    if (!hasCountry) return false;
+                }
+                // If missing, we ALLOW it (to pass "Permissive" check logic)
+            } else {
+                // TV: Strict logic (Must have country)
+                // @ts-ignore
+                if (!item.origin_country || !Array.isArray(item.origin_country) || item.origin_country.length === 0) return false;
 
-            // @ts-ignore
-            const hasCountry = item.origin_country.some((c: string) => c.toUpperCase() === activeCountry.toUpperCase());
-            if (!hasCountry) return false;
+                // @ts-ignore
+                const hasCountry = item.origin_country.some((c: string) => c.toUpperCase() === activeCountry.toUpperCase());
+                if (!hasCountry) return false;
+            }
         }
 
         return true;
