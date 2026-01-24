@@ -196,7 +196,17 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                     </div>
                 </div>
 
-                <div className="flex-1 max-w-xl relative group">
+                <div
+                    className="flex-1 max-w-xl relative group"
+                    onFocus={() => setShowFilters(true)}
+                    onBlur={(e) => {
+                        // Only hide if the new focus is NOT inside this container
+                        if (!e.currentTarget.contains(e.relatedTarget)) {
+                            setShowFilters(false);
+                            setOpenDropdown(null);
+                        }
+                    }}
+                >
                     <form onSubmit={(e) => e.preventDefault()} className="relative z-20">
                         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                             {loading ? (
@@ -209,7 +219,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                             type="text"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
-                            onFocus={() => setShowFilters(true)}
+                            // onFocus handled by parent
                             placeholder="Search movies & TV..."
                             className="w-full bg-[#161616] border border-gray-800 rounded-full py-2 pl-10 pr-4 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
                         />
