@@ -37,6 +37,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [openDropdown, setOpenDropdown] = useState<'genre' | 'lang' | 'country' | null>(null);
     const pathname = usePathname();
+    const isLoginPage = pathname === '/login';
 
     const { watchlist, addToWatchlist } = useWatchlist();
 
@@ -205,133 +206,139 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                         </div>
                         <span className="font-bold text-xl tracking-tight">CineScope</span>
                     </Link>
-                    <div className="hidden md:flex gap-6 text-sm font-medium items-center">
-                        <Link
-                            href="/"
-                            onClick={resetSearch}
-                            className={`transition-all duration-300 ease-in-out ${pathname === '/' ? 'text-white font-bold scale-110' : 'text-gray-400 hover:text-white hover:text-blue-500 scale-100'}`}
-                        >
-                            Home
-                        </Link>
-                        <Link
-                            href="/movies"
-                            onClick={resetSearch}
-                            className={`transition-all duration-300 ease-in-out ${pathname === '/movies' ? 'text-white font-bold scale-110' : 'text-gray-400 hover:text-white hover:text-blue-500 scale-100'}`}
-                        >
-                            Movies
-                        </Link>
-                        <Link
-                            href="/series"
-                            onClick={resetSearch}
-                            className={`transition-all duration-300 ease-in-out ${pathname === '/series' ? 'text-white font-bold scale-110' : 'text-gray-400 hover:text-white hover:text-blue-500 scale-100'}`}
-                        >
-                            Series
-                        </Link>
-                    </div>
-                </div>
-
-                <div
-                    className="flex-1 max-w-xl relative group"
-                    onFocus={() => setIsSearchActive(true)}
-                    onBlur={(e) => {
-                        // Only hide if the new focus is NOT inside this container
-                        if (!e.currentTarget.contains(e.relatedTarget)) {
-                            setIsSearchActive(false);
-                            setOpenDropdown(null);
-                        }
-                    }}
-                >
-                    <form onSubmit={(e) => e.preventDefault()} className="relative z-20">
-                        <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                            {loading ? (
-                                <div className="w-5 h-5 border-2 border-gray-500 border-t-blue-500 rounded-full animate-spin"></div>
-                            ) : (
-                                <svg className="w-5 h-5 text-gray-500 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                            )}
+                    {!isLoginPage && (
+                        <div className="hidden md:flex gap-6 text-sm font-medium items-center">
+                            <Link
+                                href="/"
+                                onClick={resetSearch}
+                                className={`transition-all duration-300 ease-in-out ${pathname === '/' ? 'text-white font-bold scale-110' : 'text-gray-400 hover:text-white hover:text-blue-500 scale-100'}`}
+                            >
+                                Home
+                            </Link>
+                            <Link
+                                href="/movies"
+                                onClick={resetSearch}
+                                className={`transition-all duration-300 ease-in-out ${pathname === '/movies' ? 'text-white font-bold scale-110' : 'text-gray-400 hover:text-white hover:text-blue-500 scale-100'}`}
+                            >
+                                Movies
+                            </Link>
+                            <Link
+                                href="/series"
+                                onClick={resetSearch}
+                                className={`transition-all duration-300 ease-in-out ${pathname === '/series' ? 'text-white font-bold scale-110' : 'text-gray-400 hover:text-white hover:text-blue-500 scale-100'}`}
+                            >
+                                Series
+                            </Link>
                         </div>
-                        <input
-                            type="text"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            // onFocus handled by parent
-                            placeholder="Search movies & TV..."
-                            className="w-full bg-[#161616] border border-gray-800 rounded-full py-2 pl-10 pr-4 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                        />
-                    </form>
+                    )}
+                </div>
 
-                    {/* Filters Row */}
-                    <div className={`absolute top-full left-0 right-0 mt-2 bg-[#161616] border border-gray-800 rounded-xl p-3 shadow-2xl transition-all duration-300 origin-top z-10 ${isSearchActive ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
-                        <div className="flex gap-2">
-                            {/* Genre Dropdown */}
-                            <div className="relative">
-                                <button onClick={() => setOpenDropdown(openDropdown === 'genre' ? null : 'genre')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors ${activeGenre ? 'bg-blue-600 text-white' : 'bg-[#252525] text-gray-300 hover:bg-[#333]'}`}>
-                                    {activeGenre ? GENRES.find(g => g.id === activeGenre)?.name : 'Genre'}
-                                    <svg className={`w-3 h-3 transition-transform ${openDropdown === 'genre' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                                </button>
-                                {openDropdown === 'genre' && (
-                                    <div className="absolute top-full left-0 mt-1 w-48 bg-[#1c1c1c] border border-gray-700 rounded-lg shadow-xl p-2 z-50 grid grid-cols-1 gap-1 max-h-60 overflow-y-auto scrollbar-hide">
-                                        <button onClick={() => { setActiveGenre(null); setOpenDropdown(null); }} className="text-left px-2 py-1.5 rounded text-xs text-gray-400 hover:bg-[#333] hover:text-white w-full">All Genres</button>
-                                        {GENRES.map(g => (
-                                            <button key={g.id} onClick={() => { setActiveGenre(g.id); setOpenDropdown(null); }} className={`text-left px-2 py-1.5 rounded text-xs w-full hover:bg-[#333] hover:text-white ${activeGenre === g.id ? 'text-blue-500 font-bold' : 'text-gray-300'}`}>
-                                                {g.name}
-                                            </button>
-                                        ))}
-                                    </div>
+                {!isLoginPage && (
+                    <div
+                        className="flex-1 max-w-xl relative group"
+                        onFocus={() => setIsSearchActive(true)}
+                        onBlur={(e) => {
+                            // Only hide if the new focus is NOT inside this container
+                            if (!e.currentTarget.contains(e.relatedTarget)) {
+                                setIsSearchActive(false);
+                                setOpenDropdown(null);
+                            }
+                        }}
+                    >
+                        <form onSubmit={(e) => e.preventDefault()} className="relative z-20">
+                            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                                {loading ? (
+                                    <div className="w-5 h-5 border-2 border-gray-500 border-t-blue-500 rounded-full animate-spin"></div>
+                                ) : (
+                                    <svg className="w-5 h-5 text-gray-500 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                                 )}
                             </div>
+                            <input
+                                type="text"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                // onFocus handled by parent
+                                placeholder="Search movies & TV..."
+                                className="w-full bg-[#161616] border border-gray-800 rounded-full py-2 pl-10 pr-4 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                            />
+                        </form>
 
-                            {/* Language Dropdown */}
-                            <div className="relative">
-                                <button onClick={() => setOpenDropdown(openDropdown === 'lang' ? null : 'lang')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors ${activeLanguage ? 'bg-blue-600 text-white' : 'bg-[#252525] text-gray-300 hover:bg-[#333]'}`}>
-                                    {activeLanguage ? LANGUAGES.find(l => l.code === activeLanguage)?.name : 'Language'}
-                                    <svg className={`w-3 h-3 transition-transform ${openDropdown === 'lang' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                                </button>
-                                {openDropdown === 'lang' && (
-                                    <div className="absolute top-full left-0 mt-1 w-32 bg-[#1c1c1c] border border-gray-700 rounded-lg shadow-xl p-2 z-50 grid grid-cols-1 gap-1 max-h-60 overflow-y-auto scrollbar-hide">
-                                        <button onClick={() => { setActiveLanguage(null); setOpenDropdown(null); }} className="text-left px-2 py-1.5 rounded text-xs text-gray-400 hover:bg-[#333] hover:text-white w-full">All Languages</button>
-                                        {LANGUAGES.map(l => (
-                                            <button key={l.code} onClick={() => { setActiveLanguage(l.code); setOpenDropdown(null); }} className={`text-left px-2 py-1.5 rounded text-xs w-full hover:bg-[#333] hover:text-white ${activeLanguage === l.code ? 'text-blue-500 font-bold' : 'text-gray-300'}`}>
-                                                {l.name}
-                                            </button>
-                                        ))}
-                                    </div>
+                        {/* Filters Row */}
+                        <div className={`absolute top-full left-0 right-0 mt-2 bg-[#161616] border border-gray-800 rounded-xl p-3 shadow-2xl transition-all duration-300 origin-top z-10 ${isSearchActive ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
+                            <div className="flex gap-2">
+                                {/* Genre Dropdown */}
+                                <div className="relative">
+                                    <button onClick={() => setOpenDropdown(openDropdown === 'genre' ? null : 'genre')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors ${activeGenre ? 'bg-blue-600 text-white' : 'bg-[#252525] text-gray-300 hover:bg-[#333]'}`}>
+                                        {activeGenre ? GENRES.find(g => g.id === activeGenre)?.name : 'Genre'}
+                                        <svg className={`w-3 h-3 transition-transform ${openDropdown === 'genre' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                    </button>
+                                    {openDropdown === 'genre' && (
+                                        <div className="absolute top-full left-0 mt-1 w-48 bg-[#1c1c1c] border border-gray-700 rounded-lg shadow-xl p-2 z-50 grid grid-cols-1 gap-1 max-h-60 overflow-y-auto scrollbar-hide">
+                                            <button onClick={() => { setActiveGenre(null); setOpenDropdown(null); }} className="text-left px-2 py-1.5 rounded text-xs text-gray-400 hover:bg-[#333] hover:text-white w-full">All Genres</button>
+                                            {GENRES.map(g => (
+                                                <button key={g.id} onClick={() => { setActiveGenre(g.id); setOpenDropdown(null); }} className={`text-left px-2 py-1.5 rounded text-xs w-full hover:bg-[#333] hover:text-white ${activeGenre === g.id ? 'text-blue-500 font-bold' : 'text-gray-300'}`}>
+                                                    {g.name}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Language Dropdown */}
+                                <div className="relative">
+                                    <button onClick={() => setOpenDropdown(openDropdown === 'lang' ? null : 'lang')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors ${activeLanguage ? 'bg-blue-600 text-white' : 'bg-[#252525] text-gray-300 hover:bg-[#333]'}`}>
+                                        {activeLanguage ? LANGUAGES.find(l => l.code === activeLanguage)?.name : 'Language'}
+                                        <svg className={`w-3 h-3 transition-transform ${openDropdown === 'lang' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                    </button>
+                                    {openDropdown === 'lang' && (
+                                        <div className="absolute top-full left-0 mt-1 w-32 bg-[#1c1c1c] border border-gray-700 rounded-lg shadow-xl p-2 z-50 grid grid-cols-1 gap-1 max-h-60 overflow-y-auto scrollbar-hide">
+                                            <button onClick={() => { setActiveLanguage(null); setOpenDropdown(null); }} className="text-left px-2 py-1.5 rounded text-xs text-gray-400 hover:bg-[#333] hover:text-white w-full">All Languages</button>
+                                            {LANGUAGES.map(l => (
+                                                <button key={l.code} onClick={() => { setActiveLanguage(l.code); setOpenDropdown(null); }} className={`text-left px-2 py-1.5 rounded text-xs w-full hover:bg-[#333] hover:text-white ${activeLanguage === l.code ? 'text-blue-500 font-bold' : 'text-gray-300'}`}>
+                                                    {l.name}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Country Dropdown */}
+                                <div className="relative">
+                                    <button onClick={() => setOpenDropdown(openDropdown === 'country' ? null : 'country')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors ${activeCountry ? 'bg-blue-600 text-white' : 'bg-[#252525] text-gray-300 hover:bg-[#333]'}`}>
+                                        {activeCountry ? COUNTRIES.find(c => c.code === activeCountry)?.name : 'Country'}
+                                        <svg className={`w-3 h-3 transition-transform ${openDropdown === 'country' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                    </button>
+                                    {openDropdown === 'country' && (
+                                        <div className="absolute top-full left-0 mt-1 w-40 bg-[#1c1c1c] border border-gray-700 rounded-lg shadow-xl p-2 z-50 grid grid-cols-1 gap-1 max-h-60 overflow-y-auto scrollbar-hide">
+                                            <button onClick={() => { setActiveCountry(null); setOpenDropdown(null); }} className="text-left px-2 py-1.5 rounded text-xs text-gray-400 hover:bg-[#333] hover:text-white w-full">All Countries</button>
+                                            {COUNTRIES.map(c => (
+                                                <button key={c.code} onClick={() => { setActiveCountry(c.code); setOpenDropdown(null); }} className={`text-left px-2 py-1.5 rounded text-xs w-full hover:bg-[#333] hover:text-white ${activeCountry === c.code ? 'text-blue-500 font-bold' : 'text-gray-300'}`}>
+                                                    {c.name}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {(activeGenre || activeLanguage || activeCountry) && (
+                                    <button onClick={resetFilters} className="ml-auto text-xs text-gray-500 hover:text-white transition-colors">Clear</button>
                                 )}
                             </div>
-
-                            {/* Country Dropdown */}
-                            <div className="relative">
-                                <button onClick={() => setOpenDropdown(openDropdown === 'country' ? null : 'country')} className={`px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors ${activeCountry ? 'bg-blue-600 text-white' : 'bg-[#252525] text-gray-300 hover:bg-[#333]'}`}>
-                                    {activeCountry ? COUNTRIES.find(c => c.code === activeCountry)?.name : 'Country'}
-                                    <svg className={`w-3 h-3 transition-transform ${openDropdown === 'country' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                                </button>
-                                {openDropdown === 'country' && (
-                                    <div className="absolute top-full left-0 mt-1 w-40 bg-[#1c1c1c] border border-gray-700 rounded-lg shadow-xl p-2 z-50 grid grid-cols-1 gap-1 max-h-60 overflow-y-auto scrollbar-hide">
-                                        <button onClick={() => { setActiveCountry(null); setOpenDropdown(null); }} className="text-left px-2 py-1.5 rounded text-xs text-gray-400 hover:bg-[#333] hover:text-white w-full">All Countries</button>
-                                        {COUNTRIES.map(c => (
-                                            <button key={c.code} onClick={() => { setActiveCountry(c.code); setOpenDropdown(null); }} className={`text-left px-2 py-1.5 rounded text-xs w-full hover:bg-[#333] hover:text-white ${activeCountry === c.code ? 'text-blue-500 font-bold' : 'text-gray-300'}`}>
-                                                {c.name}
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-
-                            {(activeGenre || activeLanguage || activeCountry) && (
-                                <button onClick={resetFilters} className="ml-auto text-xs text-gray-500 hover:text-white transition-colors">Clear</button>
-                            )}
                         </div>
                     </div>
-                </div>
+                )}
 
 
-                <div className="flex items-center gap-4">
-                    <Link href="/watchlist" onClick={resetSearch} className="flex items-center justify-center w-10 h-10 text-gray-400 hover:text-white transition-colors flex-shrink-0" aria-label="My List">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </Link>
-                    <ProfileDropdown />
-                </div>
+                {!isLoginPage && (
+                    <div className="flex items-center gap-4">
+                        <Link href="/watchlist" onClick={resetSearch} className="flex items-center justify-center w-10 h-10 text-gray-400 hover:text-white transition-colors flex-shrink-0" aria-label="My List">
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </Link>
+                        <ProfileDropdown />
+                    </div>
+                )}
             </header>
 
             <main className="max-w-7xl mx-auto px-6 py-8">
