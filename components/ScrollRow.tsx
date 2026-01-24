@@ -67,11 +67,14 @@ export default function ScrollRow({ children }: { children: React.ReactNode }) {
             {showLeft && (
                 <button
                     onClick={() => scroll("left")}
-                    className="absolute left-0 top-0 bottom-6 z-20 w-12 bg-black/60 hover:bg-black/80 flex items-center justify-center opacity-0 group-hover/row:opacity-100 transition-opacity duration-300 backdrop-blur-sm"
+                    className="absolute -left-12 md:-left-16 top-0 bottom-6 z-50 w-12 hidden md:flex items-center justify-center opacity-0 group-hover/row:opacity-100 translate-x-4 group-hover/row:translate-x-0 transition-all duration-300 ease-out"
+                    aria-label="Scroll Left"
                 >
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
+                    <div className="bg-black/50 hover:bg-black/80 backdrop-blur-sm p-2 rounded-full border border-white/10 shadow-xl transition-colors">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </div>
                 </button>
             )}
 
@@ -90,11 +93,14 @@ export default function ScrollRow({ children }: { children: React.ReactNode }) {
             {showRight && (
                 <button
                     onClick={() => scroll("right")}
-                    className="absolute right-0 top-0 bottom-6 z-20 w-12 bg-black/60 hover:bg-black/80 flex items-center justify-center opacity-0 group-hover/row:opacity-100 transition-opacity duration-300 backdrop-blur-sm"
+                    className="absolute -right-12 md:-right-16 top-0 bottom-6 z-50 w-12 hidden md:flex items-center justify-center opacity-0 group-hover/row:opacity-100 -translate-x-4 group-hover/row:translate-x-0 transition-all duration-300 ease-out"
+                    aria-label="Scroll Right"
                 >
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                    <div className="bg-black/50 hover:bg-black/80 backdrop-blur-sm p-2 rounded-full border border-white/10 shadow-xl transition-colors">
+                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
                 </button>
             )}
 
