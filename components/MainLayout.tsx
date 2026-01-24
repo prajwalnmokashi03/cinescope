@@ -138,7 +138,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         // Genre Filter
         if (activeGenre) {
             // @ts-ignore
-            if (!item.genre_ids?.includes(activeGenre)) return false;
+            if (!item.genre_ids || !Array.isArray(item.genre_ids) || !item.genre_ids.includes(activeGenre)) return false;
         }
 
         // Language Filter
