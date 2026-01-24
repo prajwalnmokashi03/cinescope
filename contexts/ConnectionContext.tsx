@@ -21,14 +21,29 @@ export const ConnectionProvider = ({ children }: { children: React.ReactNode }) 
     const [isInitialized, setIsInitialized] = useState(false);
 
     const checkConnection = async () => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000); // 2s timeout
+
         try {
-            const res = await fetch('/api/health');
+            // Cache busting with timestamp
+            const res = await fetch(`/api/health?t=${Date.now()}`, {
+                cache: 'no-store',
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
             if (res.ok) {
+                if (!isConnected) {
+                    // Only log state change
+                    // console.log('Connection restored');
+                }
                 setIsConnected(true);
             } else {
                 setIsConnected(false);
             }
         } catch (e) {
+            clearTimeout(timeoutId);
             setIsConnected(false);
         } finally {
             if (!isInitialized) {
@@ -41,10 +56,15 @@ export const ConnectionProvider = ({ children }: { children: React.ReactNode }) 
         // Initial check
         checkConnection();
 
-        // Poll every 1.5 seconds (1500ms)
-        const interval = setInterval(checkConnection, 1500);
+        // Aggressive Polling: 1 second
+        const interval = setInterval(checkConnection, 1000);
         return () => clearInterval(interval);
-    }, [isInitialized]);
+    }, [isConnected, isInitialized]);
+    // Dependency Logic:
+    // We want the interval to run continuously. 
+    // Relying on isConnected in dep array might reset interval unnecessarily but ensures fresh closure state if needed.
+    // Actually, checkConnection doesn't depend on state closure (sets state directly). 
+    // But keeping it safe.
 
     return (
         <ConnectionContext.Provider value={{ isConnected, isInitialized, checkConnection }}>
