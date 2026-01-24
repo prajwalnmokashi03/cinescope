@@ -1,0 +1,48 @@
+export const GENRES = [
+    { id: 28, name: "Action" },
+    { id: 12, name: "Adventure" },
+    { id: 16, name: "Animation" },
+    { id: 35, name: "Comedy" },
+    { id: 80, name: "Crime" },
+    { id: 99, name: "Documentary" },
+    { id: 18, name: "Drama" },
+    { id: 10751, name: "Family" },
+    { id: 14, name: "Fantasy" },
+    { id: 36, name: "History" },
+    { id: 27, name: "Horror" },
+    { id: 10402, name: "Music" },
+    { id: 9648, name: "Mystery" },
+    { id: 10749, name: "Romance" },
+    { id: 878, name: "Sci-Fi" },
+    { id: 53, name: "Thriller" },
+    { id: 10752, name: "War" },
+    { id: 37, name: "Western" },
+];
+
+export const LANGUAGES = [
+    { code: "en", name: "English" },
+    { code: "es", name: "Spanish" },
+    { code: "fr", name: "French" },
+    { code: "de", name: "German" },
+    { code: "it", name: "Italian" },
+    { code: "ja", name: "Japanese" },
+    { code: "ko", name: "Korean" },
+    { code: "pt", name: "Portuguese" },
+    { code: "ru", name: "Russian" },
+    { code: "zh", name: "Chinese" },
+    { code: "hi", name: "Hindi" },
+];
+
+export const COUNTRIES = [
+    { code: "US", name: "United States" },
+    { code: "GB", name: "United Kingdom" },
+    { code: "FR", name: "France" },
+    { code: "DE", name: "Germany" },
+    { code: "IT", name: "Italy" },
+    { code: "jp", name: "Japan" },
+    { code: "kr", name: "South Korea" },
+    { code: "ca", name: "Canada" },
+    { code: "au", name: "Australia" },
+    { code: "es", name: "Spain" },
+    { code: "in", name: "India" },
+];
