@@ -26,10 +26,3 @@ CineScope is a full-stack web application for discovering movies and TV shows an
 
 ## 🔗 Live Demo
 https://cinescope-chi.vercel.app/
-
-## 📦 Installation
-```bash
-git clone https://github.com/your-username/cinescope.git
-cd cinescope
-npm install
-npm run dev
